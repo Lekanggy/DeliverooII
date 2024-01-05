@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {MagnifyingGlassIcon, ChevronDownIcon, UserIcon, AdjustmentsVerticalIcon } from 'react-native-heroicons/outline'
 import Categories from '../components/Categories'
+import FeatureRow from '../components/FeatureRow'
 
 const Home = () => {
   const navigation = useNavigation()
@@ -54,6 +55,23 @@ const Home = () => {
         >
           {/* Categories */}
           <Categories/>
+          {/* Features Rows */}
+
+          <FeatureRow
+            id="123"
+            title="Feature"
+            description="This feature is rare one so enjoy it"
+          />
+           <FeatureRow
+            id="123"
+            title="Tasty Discount"
+            description="This feature is rare one so enjoy it"
+          />
+           <FeatureRow
+            id="123"
+            title="Offers Near you"
+            description="This feature is rare one so enjoy it"
+          />
         </ScrollView>
        
     </SafeAreaView>
