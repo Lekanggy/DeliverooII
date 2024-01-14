@@ -1,18 +1,35 @@
 import { View, Text, Image, TextInput, ScrollView } from 'react-native'
-import React, { useLayoutEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {MagnifyingGlassIcon, ChevronDownIcon, UserIcon, AdjustmentsVerticalIcon } from 'react-native-heroicons/outline'
 import Categories from '../components/Categories'
 import FeatureRow from '../components/FeatureRow'
+import sanityClient from '../sanity'
 
 const Home = () => {
   const navigation = useNavigation()
+  const [featuredCateg, setFeaturedCateg] = useState([])
 
   useLayoutEffect(()=>{
     navigation.setOptions({
      headerShown:false
     })
+  }, [])
+
+  useEffect(()=>{
+    sanityClient.fetch(
+      `
+        *[_type =="featured"]{
+          ...,
+          restaurants[]->{
+            ...,
+            dishes[]->
+             
+          }
+        }
+      `
+    ).then(data=> setFeaturedCateg(data))
   }, [])
 
   return (
@@ -57,21 +74,16 @@ const Home = () => {
           <Categories/>
           {/* Features Rows */}
 
-          <FeatureRow
-            id="123"
-            title="Feature"
-            description="This feature is rare one so enjoy it"
-          />
-           <FeatureRow
-            id="123"
-            title="Tasty Discount"
-            description="This feature is rare one so enjoy it"
-          />
-           <FeatureRow
-            id="123"
-            title="Offers Near you"
-            description="This feature is rare one so enjoy it"
-          />
+          {
+            featuredCateg?.map(d=>
+                  <FeatureRow
+                    key={d?._id}
+                    id={d?._id}
+                    title={d?.name}
+                    description={d?.short_description}
+                  />
+              )
+          }
         </ScrollView>
        
     </SafeAreaView>
