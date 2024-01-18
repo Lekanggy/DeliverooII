@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image, ScrollView} from 'react-native'
 import React, { useMemo, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeFromBasket, selectBasketItems } from '../features/basketSlice'
+import { removeFromBasket, selectBasketItems, selectBasketTotal } from '../features/basketSlice'
 import { selectRestaurantItems } from '../features/restaurantSlice'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { XCircleIcon } from 'react-native-heroicons/solid'
@@ -13,6 +13,7 @@ const BasketScreen = () => {
     const navigation = useNavigation()
     const items = useSelector(selectBasketItems)
     const restaurant = useSelector(selectRestaurantItems)
+    const totalBasket = useSelector(selectBasketTotal)
     const [groupedItemInBasket, setGroupedItemInBasket] = useState({})
     const dispatch = useDispatch()
 
@@ -25,7 +26,7 @@ const BasketScreen = () => {
         setGroupedItemInBasket(groupedItems)
     },[items])
 
-    console.log(Object.entries(groupedItemInBasket)[0])
+    // console.log(Object.entries(groupedItemInBasket)[0])
   return (
     <SafeAreaView className="flex-1 bg-white">
         <View className="flex-1 bg-gray-100">
@@ -36,7 +37,7 @@ const BasketScreen = () => {
                         {restaurant?.title}
                     </Text>
                 </View>
-                <TouchableOpacity className="rounded-full bg-gray-100 absolute top-3 right-3">
+                <TouchableOpacity onPress={()=> navigation.goBack()} className="rounded-full bg-gray-100 absolute top-3 right-3">
                     <XCircleIcon color="#00CCBB" height={50} width={50}/>
                 </TouchableOpacity>
             </View>
@@ -83,6 +84,33 @@ const BasketScreen = () => {
                     ))
                 }
             </ScrollView>
+
+            <View className="p-5 bg-white mt-5 space-y-4">
+                <View className="flex-row justify-between">
+                    <Text className="text-gray-400">Sub Total</Text>
+                    <Text className="text-gray-400">
+                        <Currency quantity={totalBasket} currency='GBP'/>
+                    </Text>
+                </View>
+                <View className="flex-row justify-between">
+                    <Text className="text-gray-400">Delivery fees</Text>
+                    <Text className="text-gray-400">
+                        <Currency quantity={5.99} currency='GBP'/>
+                    </Text>
+                </View>
+                <View className="flex-row justify-between">
+                    <Text>Total Order</Text>
+                    <Text className="font-extrabold">
+                        <Currency quantity={totalBasket + 5.99} currency='GBP'/>
+                    </Text>
+                </View>
+                <TouchableOpacity 
+                    onPress={()=> navigation.navigate("PreparingOrderScreen")} 
+                    className="rounded-lg bg-[#00CCBB] p-4"
+                >
+                    <Text className="text-center text-white font-bold text-lg">Place Order</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     </SafeAreaView>
    
